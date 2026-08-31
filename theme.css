@@ -1,0 +1,279 @@
+/* Fresh, clean lecture theme for reveal.js — light, high-contrast, system fonts.
+   Layered on top of dist/reveal.css (which handles layout only). */
+:root{
+  --bg:#f4f4f2; --fg:#1a1a1a; --muted:#5c6070; --accent:#12508f; --accent2:#0f9d78;
+  --line:#e3e5ea; --bar:#12508f; --good:#0f9d78; --bad:#b3261e; --accent3:#7c3aed; --card:#f6f7f9;
+}
+.reveal-viewport{ background:var(--bg); }
+.reveal{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:34px; color:var(--fg); }
+.reveal .slides{ text-align:left; }
+/* Let reveal vertically center each slide's content block (balanced whitespace).
+   Do NOT force section height — that pins content to the top and creates dead space. */
+.reveal section.center{ text-align:center; }
+.reveal section.center h1,.reveal section.center h2,.reveal section.center p{ margin-left:auto; margin-right:auto; }
+/* Keep everything inside the 1280x720 canvas — never overflow the slide.
+   520px ≈ the usable content height (619) minus a two-line heading, so a lone
+   image fills the slide without overflowing. Standalone images are centred so a
+   single image reads as intentional, not dumped top-left. */
+.reveal .slides img{ max-width:100%; max-height:520px; height:auto; object-fit:contain; }
+.reveal .slides section > img{ display:block; margin:.4em auto .85em; }
+/* Game-tree figures are vector SVGs with a small intrinsic (mm) size; set an
+   explicit height so they scale UP to fill the slide (lossless, no distortion). */
+.reveal .slides img[src$=".svg"]{ height:520px; width:auto; max-width:100%; max-height:none; }
+.reveal figure{ margin:0; }
+.reveal .imgrow{ display:flex; gap:22px; align-items:flex-end; justify-content:center; }
+/* Case slide: size images to fill the row like the old beamer minipages.
+   Equal heights → the 1.54 and 0.51 aspect ratios reproduce the ~3:1 width split. */
+.reveal .imgrow-fill{ align-items:flex-end; gap:28px; }
+.reveal .imgrow-fill img{ max-height:480px; max-width:none; width:auto; }
+.reveal .caption{ font-size:.88em; }
+.reveal .cols{ display:flex; gap:34px; align-items:center; }
+.reveal .col-narrow{ flex:0 0 30%; }
+.reveal .col-wide{ flex:1 1 auto; }
+/* Tables */
+.reveal table{ border-collapse:collapse; margin:.2em auto; font-size:.92em; }
+.reveal th,.reveal td{ border:1px solid var(--line); padding:.4em .75em; text-align:left; vertical-align:top; }
+.reveal thead th,.reveal table th{ background:var(--card); font-weight:700; }
+/* Payoff/efficiency matrices (beamer outcome grids) */
+.reveal table.matrix{ border-collapse:collapse; margin:.3em auto; }
+.reveal table.matrix td{ border:1px solid var(--line); text-align:center; padding:.3em .9em; font-size:1.1em; font-variant-numeric:tabular-nums; }
+.reveal .pe{ color:#b3261e; font-weight:800; }        /* efficient outcome (red highlight) */
+/* Display equations */
+.reveal .eq{ text-align:center; font-size:1.25em; font-style:italic; margin:.5em 0; }
+/* A large centred prompt (beamer \Large discussion slides) */
+.reveal .big{ font-size:1.35em; }
+/* Placeholder for content not yet ported/built (e.g. new pillars) */
+.reveal .placeholder{ border:2px dashed var(--line); border-radius:16px; padding:.8em 1.4em;
+  color:var(--muted); display:inline-block; font-size:.85em; margin-top:.6em; }
+/* Dense slides that carry a full worked numeric example — one notch smaller so
+   they fit the canvas without shrinking the rest of the deck. */
+.reveal section.dense{ font-size:.82em; }
+.reveal section.dense h2{ font-size:1.4em; }
+.reveal .src{ font-size:.5em; color:var(--muted); text-align:right; margin-top:.4em; }
+.reveal .src a{ color:var(--muted); }
+.reveal h1,.reveal h2,.reveal h3{ color:var(--fg); font-weight:750; line-height:1.15;
+  letter-spacing:-.01em; text-transform:none; margin:0 0 .5em; }
+.reveal h1{ font-size:1.7em; }
+.reveal h2{ font-size:1.25em; }
+.reveal h3{ font-size:1.0em; color:var(--muted); }
+.reveal p,.reveal li{ line-height:1.4; }
+.reveal ul,.reveal ol{ display:block; margin-left:1em; }
+.reveal li{ margin:.35em 0; }
+.reveal strong{ color:var(--accent); font-weight:700; }
+.reveal em{ color:var(--fg); }
+.reveal a{ color:var(--accent); }
+.reveal .muted{ color:var(--muted); }
+.reveal blockquote{ background:var(--card); border-left:5px solid var(--accent); border-radius:0 10px 10px 0;
+  box-shadow:none; width:auto; padding:.7em 1em; font-style:normal; }
+.reveal .accentbar{ height:6px; width:120px; background:var(--accent); border-radius:4px; margin:.2em 0 .8em; }
+.reveal .controls{ color:var(--accent); }
+.reveal .progress{ color:var(--accent); }
+
+/* Title slide */
+.reveal .title h1{ font-size:2.1em; }
+.reveal .title .sub{ color:var(--muted); font-size:1.05em; margin-top:.3em; }
+.reveal .title .course{ color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:.6em; }
+
+/* ---- Live poll widget ---- */
+.poll{ display:grid; grid-template-columns:1fr auto; gap:34px; align-items:start; }
+.poll .qwrap{ min-width:0; }
+.poll h2{ margin-bottom:.6em; }
+.poll .join{ text-align:center; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; }
+.poll .join img{ width:170px; height:170px; display:block; image-rendering:pixelated; background:#fff; border-radius:8px; }
+.poll .join .code{ font-size:1.1em; font-weight:800; letter-spacing:.18em; margin-top:10px; color:var(--accent); }
+.poll .join .hint{ font-size:.45em; color:var(--muted); margin-top:2px; }
+.poll .bars{ display:flex; flex-direction:column; gap:16px; }
+.poll .bar .top{ display:flex; justify-content:space-between; gap:14px; margin-bottom:6px; font-size:.82em; }
+.poll .bar .lab{ display:flex; gap:12px; align-items:baseline; }
+.poll .bar .k{ font-weight:800; color:var(--accent); }
+.poll .bar .n{ color:var(--muted); font-variant-numeric:tabular-nums; }
+.poll .track{ height:40px; background:color-mix(in srgb,var(--fg) 6%,transparent); border-radius:9px; overflow:hidden; }
+.poll .fill{ height:100%; width:0; background:var(--bar); border-radius:9px; }
+.poll .bar.correct .fill{ background:var(--good); }
+.poll .bar.correct .k{ color:var(--good); }
+.poll .foot{ margin-top:22px; display:flex; align-items:center; gap:22px; font-size:.7em; color:var(--muted); }
+.poll .foot b{ color:var(--fg); }
+.poll button.reveal-ans, .poll button.reveal-results{ font:inherit; font-size:.68em; padding:8px 16px;
+  border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--accent); cursor:pointer; }
+/* Results hidden by default so the projector can't sway votes: empty tracks, no numbers. */
+.poll .bar.masked .n{ visibility:hidden; }
+.poll .bar.masked .track{ opacity:.5; }
+.poll .tag{ font-size:.5em; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+  border:1px solid var(--line); border-radius:20px; padding:3px 10px; }
+
+/* Student vote page (vote.html) */
+.vote body{ background:var(--bg); }
+
+/* ---- Parametric-plot widget (widget.js) ---- */
+.widget{ display:flex; flex-direction:column; gap:10px; font-size:.78em; }
+.widget .w-bar{ display:flex; gap:10px; }
+.widget .w-mode{ font:inherit; font-size:.82em; padding:6px 16px; border:1px solid var(--line);
+  border-radius:20px; background:#fff; color:var(--muted); cursor:pointer; }
+.widget .w-mode.on{ background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700; }
+.widget .w-plot{ width:100%; height:auto; background:var(--card); border:1px solid var(--line); border-radius:14px; }
+.widget .w-plot .w-axis{ stroke:var(--muted); stroke-width:1.2; }
+.widget .w-plot .w-axlab{ fill:var(--muted); font-size:15px; font-family:inherit; }
+.widget .w-plot .w-cursor{ stroke:var(--fg); stroke-width:1.4; stroke-dasharray:2 4; opacity:.65; }
+.widget .w-plot .w-opt{ stroke:var(--accent); stroke-width:1.3; stroke-dasharray:3 5; opacity:.55; }
+.widget .w-plot .w-optlab{ fill:var(--accent); font-size:15px; font-weight:700; font-family:inherit; paint-order:stroke; stroke:var(--card); stroke-width:4px; }
+.widget .w-plot .w-std{ stroke:var(--bad); stroke-width:1.6; stroke-dasharray:8 5; opacity:.8; }
+.widget .w-plot .w-stdlab{ fill:var(--bad); font-size:15px; font-weight:700; font-family:inherit; paint-order:stroke; stroke:var(--card); stroke-width:4px; }
+.widget .w-plot .w-choose{ fill:none; stroke:var(--bad); stroke-width:3; }
+.widget .w-legend{ display:flex; flex-wrap:wrap; gap:16px; font-size:.8em; margin-top:-2px; }
+.widget .w-key{ display:inline-flex; align-items:center; gap:8px; color:var(--fg); }
+.widget .w-key i{ width:20px; height:3px; border-radius:2px; display:inline-block; }
+.widget .w-read{ display:flex; flex-direction:column; gap:6px; }
+.widget .w-head{ font-size:1.05em; }
+.widget .w-head b{ color:var(--accent); font-variant-numeric:tabular-nums; }
+.widget .w-ok{ color:var(--good); font-weight:700; }
+.widget .w-bad{ color:var(--bad); font-weight:700; }
+.widget .w-at{ color:var(--muted); font-size:.9em; display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.widget .w-chip{ border:1px solid; border-radius:16px; padding:2px 12px; color:var(--fg);
+  font-size:.92em; font-variant-numeric:tabular-nums; background:#fff; }
+.widget .w-ctrls{ display:flex; flex-direction:column; gap:7px; }
+.widget .w-row{ display:grid; grid-template-columns:16em 1fr 4em; gap:16px; align-items:center; }
+.widget .w-lab{ color:var(--fg); }
+.widget .w-val{ text-align:right; color:var(--accent); font-variant-numeric:tabular-nums; }
+.widget .w-row input[type=range]{ width:100%; accent-color:var(--accent); }
+.widget .w-err{ color:var(--bad); }
+
+/* ---- Numeric (slider) poll — presenter histogram ---- */
+.poll-num .hist{ margin:.15em 0 .1em; }
+.poll-num .histsvg{ width:100%; height:auto; }
+.poll-num .histsvg .h-axis{ stroke:var(--muted); stroke-width:1.2; }
+.poll-num .histsvg .h-bar{ fill:var(--bar); }
+.poll-num .histsvg .h-tick{ fill:var(--muted); font-size:15px; font-family:inherit; }
+.poll-num .histsvg .h-correct{ stroke:var(--good); stroke-width:2.5; stroke-dasharray:7 5; }
+.poll-num .histsvg .h-correctlab{ fill:var(--good); font-size:15px; font-weight:700; font-family:inherit;
+  paint-order:stroke; stroke:var(--card); stroke-width:4px; }
+
+/* Free-text poll: presenter shows submitted answers as wrapped chips (masked until
+   reveal). The JS (fitAnswers) shrinks --txtf to scale the chip font/gap/padding
+   so every answer stays on the slide; past the floor the box scrolls (see JS). */
+.poll-text .answers{ display:flex; flex-wrap:wrap; gap:calc(12px * var(--txtf,1)); align-content:flex-start; min-height:180px; }
+.poll-text .answer{ background:var(--card); border:1px solid var(--line); border-radius:14px;
+  padding:calc(10px * var(--txtf,1)) calc(16px * var(--txtf,1)); font-size:calc(.8em * var(--txtf,1));
+  line-height:1.3; max-width:100%; overflow-wrap:anywhere; }
+.poll-text .answers-masked{ color:var(--muted); font-style:italic; align-self:center; }
+
+/* choicetext: one colored column per option (pick-and-explain poll).
+   The board fills a fixed-height area; JS (choicetext fit) packs each side into
+   1–3 sub-columns and shrinks --ctf to keep every argument on screen. If even the
+   smallest font overflows (very many arguments), the side scrolls instead of
+   clipping. */
+/* choicetext lays out full-width (override the base .poll two-column grid): a
+   header row (question left, compact QR right), then the columns span everything. */
+.poll-choicetext{ display:block; }
+.poll-choicetext .ct-top{ display:flex; justify-content:space-between; align-items:center; gap:30px; margin-bottom:.15em; }
+.poll-choicetext .ct-intro{ flex:1 1 auto; min-width:0; }
+.poll-choicetext .ct-intro h2{ margin:.05em 0 .1em; }
+.poll-choicetext .ct-top .join{ flex:0 0 auto; display:flex; align-items:center; gap:14px;
+  background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 14px; }
+.poll-choicetext .ct-top .join-cap{ text-align:right; }
+.poll-choicetext .ct-top .join .hint{ font-size:.42em; color:var(--muted); margin:0 0 4px; }
+.poll-choicetext .ct-top .join .code{ font-size:.9em; font-weight:800; letter-spacing:.14em; color:var(--accent); }
+.poll-choicetext .ct-top .join img{ width:132px; height:132px; image-rendering:pixelated; background:#fff; border-radius:8px; display:block; }
+.poll-choicetext .poll-desc{ max-width:none; margin:.1em 0 0; }
+.poll-choicetext .ctcols{ display:grid; gap:18px; height:470px; margin:.35em 0 0; align-items:stretch; }
+.poll-choicetext .ctcol{ border-radius:16px; padding:12px 15px 14px; display:flex; flex-direction:column; min-height:0;
+  background:color-mix(in srgb, var(--c) 12%, #fff); border:1px solid color-mix(in srgb, var(--c) 30%, #fff); }
+.poll-choicetext .cthead{ font-weight:800; color:var(--c); margin-bottom:10px; flex:0 0 auto; }
+.poll-choicetext .cthead .ctn{ float:right; font-variant-numeric:tabular-nums; }
+/* CSS grid (not multi-column): a fixed --ctn columns that fill left-to-right and
+   add ROWS downward — so overflow is vertical (scrollHeight), which the JS shrink
+   loop checks. Multi-column would instead spill EXTRA columns sideways and force a
+   horizontal scroll, which the height check can't see. */
+.poll-choicetext .ctlist{ flex:1 1 auto; min-height:0; overflow-y:auto; overflow-x:hidden;
+  font-size:calc(1em * var(--ctf, 1));
+  display:grid; grid-template-columns:repeat(var(--ctn, 1), minmax(0, 1fr)); gap:8px; align-content:start; }
+.poll-choicetext .ctlist .answer{ background:#fff; border:1px solid var(--line); border-radius:10px;
+  padding:6px 10px; line-height:1.25; min-width:0; overflow-wrap:anywhere; }
+.poll-choicetext .answers-masked{ color:var(--muted); font-style:italic; }
+/* Free-text student view (vote.html): a textarea + send button */
+.textwrap{ display:flex; flex-direction:column; gap:14px; margin:.4em 0; }
+.textwrap textarea{ width:100%; box-sizing:border-box; font:inherit; padding:14px; border-radius:14px;
+  border:1px solid var(--line); background:#fff; color:var(--fg); resize:vertical; }
+.textwrap textarea:focus{ outline:none; border-color:var(--accent); }
+.textwrap .send{ align-self:flex-start; }
+/* Optional clarification shown under a poll question (e.g. what the rule in question is) */
+.poll .poll-desc{ font-size:.72em; color:var(--muted); line-height:1.4; margin:-.2em 0 .7em; max-width:62ch; }
+.vote .poll-desc{ color:var(--muted); font-size:.92em; line-height:1.4; margin:.15em 0 .5em; }
+/* Numeric poll student view (vote.html): a number box you can type in + a slider */
+.numwrap{ display:flex; flex-direction:column; gap:16px; margin:.5em 0; }
+.numentry{ display:flex; align-items:baseline; justify-content:center; gap:8px; }
+.numval{ font-size:1.7em; font-weight:700; text-align:center; width:5.5em; padding:8px 12px;
+  border:1px solid var(--line); border-radius:14px; background:#fff; color:var(--fg); font-family:inherit; }
+.numval:focus{ outline:none; border-color:var(--accent); }
+.numunit{ font-size:1.1em; color:var(--muted); }
+.numwrap input[type=range]{ width:100%; accent-color:var(--accent); }
+.numscale{ display:flex; justify-content:space-between; color:var(--muted); font-size:.85em; }
+
+/* Back-to-roadmap button (poll.js mountHome): phone-only, top-left, sits in the
+   letterbox band above the 16:9 slide so it never covers content. */
+.deck-home{ position:fixed; top:calc(12px + env(safe-area-inset-top)); left:14px; z-index:65;
+  width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+  font-size:20px; line-height:1; padding:0; border-radius:50%;
+  border:1px solid var(--line); background:var(--card); color:var(--accent);
+  cursor:pointer; box-shadow:0 1px 6px rgba(0,0,0,.16); -webkit-tap-highlight-color:transparent; }
+.deck-home:active{ transform:scale(.9); }
+
+/* ---- In-deck transcript (transcript.js) ----
+   A bottom-left toggle and a scrollable side panel, hidden by default. Both live
+   outside .reveal, so they use a normal body font-size (not the deck's 34px) and
+   read comfortably. When the toggle is present the deck reserves a slim bottom strip
+   (.reveal.tx-has-toggle) so the toggle and reveal's own controls sit clear of slide
+   text — the button can never overshadow content. */
+.reveal.tx-has-toggle{ height:calc(100% - 52px); }
+.transcript-toggle{ position:fixed; left:16px; bottom:14px; z-index:60;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:13px; font-weight:600; padding:8px 15px; border-radius:20px;
+  border:1px solid var(--line); background:var(--card); color:var(--accent);
+  cursor:pointer; box-shadow:0 1px 6px rgba(0,0,0,.14);
+  touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+/* Hover only on real pointers — on touch, a :hover rule makes iOS swallow the
+   first tap (you'd have to tap twice to open the panel). */
+@media (hover:hover){ .transcript-toggle:hover{ border-color:var(--accent); } }
+.transcript-toggle.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+
+.transcript-panel{ position:fixed; top:0; right:0; bottom:0; width:min(440px,42vw);
+  z-index:70; background:var(--card); color:var(--fg); border-left:1px solid var(--line);
+  box-shadow:-6px 0 26px rgba(0,0,0,.16); display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .22s ease; visibility:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.5; }
+.transcript-panel.open{ transform:translateX(0); visibility:visible; }
+/* Slim header: just the close button, right-aligned. The slide title is dropped —
+   it's redundant and ate vertical space that's better given to the transcript. */
+.transcript-panel .tx-head{ flex:0 0 auto; display:flex; justify-content:flex-end;
+  padding:8px 10px; background:var(--card); }
+.transcript-panel .tx-title{ display:none; }
+.transcript-panel .tx-close{ flex:0 0 auto; font-size:16px; line-height:1; padding:5px 9px;
+  border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--muted);
+  cursor:pointer; }
+.transcript-panel .tx-close:hover{ border-color:var(--accent); color:var(--accent); }
+.transcript-panel .tx-body{ flex:1 1 auto; overflow-y:auto; padding:14px 18px 26px;
+  -webkit-overflow-scrolling:touch; }
+.transcript-panel .tx-body.tx-empty{ color:var(--muted); font-style:italic; }
+.transcript-panel .tx-body p{ margin:.55em 0; }
+.transcript-panel .tx-body h1,.transcript-panel .tx-body h2,
+.transcript-panel .tx-body h3,.transcript-panel .tx-body h4{ font-size:1em; font-weight:700;
+  margin:.9em 0 .3em; color:var(--fg); line-height:1.25; }
+.transcript-panel .tx-body ul,.transcript-panel .tx-body ol{ margin:.4em 0; padding-left:1.3em; }
+.transcript-panel .tx-body li{ margin:.3em 0; }
+.transcript-panel .tx-body strong{ color:var(--accent); font-weight:700; }
+.transcript-panel .tx-body .tx-note{ color:var(--muted); font-style:italic; font-size:.92em; }
+@media (max-width:760px){
+  .transcript-panel{ top:auto; left:0; right:0; bottom:0; width:auto; height:88vh;
+    border-left:none; border-top:1px solid var(--line); border-radius:16px 16px 0 0;
+    transform:translateY(100%); box-shadow:0 -6px 26px rgba(0,0,0,.18); }
+  .transcript-panel.open{ transform:translateY(0); }
+}
+
+/* Widget overlay: live class guesses from a paired numeric poll */
+.widget .w-plot .w-guess{ fill:var(--accent3); opacity:.28; }
+.widget .w-plot .w-guessmean{ stroke:var(--accent3); stroke-width:2; }
+.widget .w-plot .w-guesslab{ fill:var(--accent3); font-size:14px; font-weight:700; font-family:inherit;
+  paint-order:stroke; stroke:var(--card); stroke-width:4px; }
+.widget .w-class{ color:var(--accent3); }
+.widget .w-class b{ color:var(--accent3); font-variant-numeric:tabular-nums; }
