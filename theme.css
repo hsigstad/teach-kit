@@ -137,6 +137,19 @@
 .widget .w-val{ text-align:right; color:var(--accent); font-variant-numeric:tabular-nums; }
 .widget .w-row input[type=range]{ width:100%; accent-color:var(--accent); }
 .widget .w-err{ color:var(--bad); }
+/* 'side' layout (spec.layout:'side'): a squarer plot in a left column, sliders
+   stacked in a right column, readout spanning the full width below. Without
+   this, a near-square plot spans the whole slide width and — with height:auto —
+   grows far too tall for the 720px canvas (see the auditing_optimal widget). */
+.widget.w-side{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:"main ctrls" "read read"; column-gap:26px; row-gap:8px; align-items:center; }
+.widget.w-side .w-main{ grid-area:main; display:flex; flex-direction:column; gap:8px; min-width:0; }
+.widget.w-side .w-ctrls{ grid-area:ctrls; }
+.widget.w-side .w-read{ grid-area:read; }
+.widget.w-side .w-row{ grid-template-columns:1fr 3.5em; grid-template-areas:"lab lab" "inp val"; gap:2px 12px; }
+.widget.w-side .w-lab{ grid-area:lab; }
+.widget.w-side .w-row input[type=range]{ grid-area:inp; }
+.widget.w-side .w-val{ grid-area:val; }
 
 /* ---- Numeric (slider) poll — presenter histogram ---- */
 .poll-num .hist{ margin:.15em 0 .1em; }
