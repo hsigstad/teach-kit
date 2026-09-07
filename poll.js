@@ -4,7 +4,7 @@
    Each device sends {clientId, choices:[...]}; presenter tallies clientId -> choices,
    so single-select replaces, multi-select toggles, and re-votes update in place. */
 (function (w) {
-  function client() { return supabase.createClient(w.SB_URL, w.SB_KEY) }
+  function client() { return w.__pollSb || (w.__pollSb = supabase.createClient(w.SB_URL, w.SB_KEY)) }
   function channel(sb, room, pollId) { return sb.channel('poll-' + room + '-' + pollId, { config: { broadcast: { self: true } } }) }
   function randId() {
     return 'x' + Math.abs((Date.now() ^ (performance.now() * 1e6)) | 0).toString(36) +
