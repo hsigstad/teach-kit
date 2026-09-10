@@ -123,15 +123,19 @@
     var f = feed(room, pollId), votes = f.values, revealed = false, shown = false   // shared store: clientId -> number
     var histEl = el.querySelector('.hist'), totalEl = el.querySelector('.total'), meanEl = el.querySelector('.mean')
     var min = poll.min, max = poll.max, N = poll.bins || 24, unit = poll.unit || ''
+    // Optional log scale (poll.logScale): bins, axis and ticks are spaced by log(value).
+    var LOG = !!poll.logScale, lo = LOG ? Math.max(1, min) : min, lnlo = Math.log(lo), lnr = Math.log(max) - lnlo
+    function frac(v) { return LOG ? (Math.log(Math.max(lo, v)) - lnlo) / lnr : (v - min) / (max - min) }
+    function logTicks(a, b) { var out = [a]; for (var p = Math.ceil(Math.log(a) / Math.LN10); Math.pow(10, p) < b; p++) { var v = Math.pow(10, p); if (v > a) out.push(v) } out.push(b); return out }
     function render() {
       var vals = Array.from(votes.values()), total = vals.length
       totalEl.textContent = total
       meanEl.textContent = !shown ? '–' : (total ? (vals.reduce(function (a, b) { return a + b }, 0) / total).toFixed(1) + unit : '–')
       var bins = new Array(N).fill(0)
-      vals.forEach(function (v) { var i = Math.floor((v - min) / (max - min) * N); if (i === N) i = N - 1; if (i >= 0 && i < N) bins[i]++ })
+      vals.forEach(function (v) { var i = Math.floor(frac(v) * N); if (i === N) i = N - 1; if (i >= 0 && i < N) bins[i]++ })
       var maxc = Math.max(1, ...bins)
       var W = 760, H = 300, l = 40, r = 14, t = 16, b = 40, bw = (W - l - r) / N
-      function sx(x) { return l + (x - min) / (max - min) * (W - l - r) }
+      function sx(x) { return l + frac(x) * (W - l - r) }
       function sy(c) { return t + (1 - c / maxc) * (H - t - b) }
       var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="histsvg">'
       s += '<line x1="' + l + '" y1="' + sy(0) + '" x2="' + (W - r) + '" y2="' + sy(0) + '" class="h-axis"/>'
@@ -140,7 +144,7 @@
         var x = l + i * bw, y = sy(bins[i])
         s += '<rect x="' + (x + 1).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw - 2).toFixed(1) + '" height="' + (sy(0) - y).toFixed(1) + '" class="h-bar"/>'
       }
-      ;[min, (min + max) / 2, max].forEach(function (tk) {
+      ;(LOG ? logTicks(lo, max) : [min, (min + max) / 2, max]).forEach(function (tk) {
         s += '<text x="' + sx(tk).toFixed(1) + '" y="' + (H - 14) + '" class="h-tick" text-anchor="middle">' + tk + '</text>'
       })
       if (shown && revealed && poll.correct != null) {
@@ -168,12 +172,21 @@
   function numericStudent(el, poll, pollId, room) {
     var cid = sessionStorage.getItem('poll_cid_' + room + '_' + pollId)
     if (!cid) { cid = randId(); sessionStorage.setItem('poll_cid_' + room + '_' + pollId, cid) }
-    var S = txt(), unit = poll.unit || '', mid = (poll.min + poll.max) / 2
+    var S = txt(), unit = poll.unit || ''
+    // Optional log scale (poll.logScale): the slider runs on a 0–1000 position that
+    // maps to log(value), so a wide range keeps fine resolution at the low end. The
+    // number box still takes the raw value. Linear polls (default) are unchanged.
+    var LOG = !!poll.logScale, lo = LOG ? Math.max(1, poll.min) : poll.min
+    var lnlo = Math.log(lo), lnr = Math.log(poll.max) - lnlo
+    function toPos(v) { return LOG ? Math.round(1000 * (Math.log(Math.max(lo, v)) - lnlo) / lnr) : v }
+    function fromPos(p) { return LOG ? Math.round(Math.exp(lnlo + (p / 1000) * lnr)) : p }
+    var mid = LOG ? Math.round(Math.exp(lnlo + lnr / 2)) : (poll.min + poll.max) / 2
+    var rngMin = LOG ? 0 : poll.min, rngMax = LOG ? 1000 : poll.max, rngStep = LOG ? 1 : (poll.step || 1)
     el.innerHTML = '<div class="status" id="st">' + S.connecting + '</div><h1 id="q"></h1>' +
       '<div class="numwrap">' +
         '<div class="numentry"><input type="number" id="nv" class="numval" min="' + poll.min + '" max="' + poll.max +
           '" step="' + (poll.step || 1) + '" placeholder="—">' + (unit ? '<span class="numunit">' + unit + '</span>' : '') + '</div>' +
-        '<input type="range" id="rng" min="' + poll.min + '" max="' + poll.max + '" step="' + (poll.step || 1) + '" value="' + mid + '">' +
+        '<input type="range" id="rng" min="' + rngMin + '" max="' + rngMax + '" step="' + rngStep + '" value="' + toPos(mid) + '">' +
         '<div class="numscale"><span>' + poll.min + '</span><span>' + poll.max + '</span></div>' +
       '</div>' +
       '<div class="done" id="done">' + S.numHint + '</div>'
@@ -193,17 +206,17 @@
       else { clearTimeout(timer); timer = setTimeout(function () { last = Date.now(); send(v) }, 130) }
     }
     // drag the slider → mirror into the number box and send live
-    rng.addEventListener('input', function () { touched = true; nv.value = rng.value; sendThrottled(+rng.value) })
-    rng.addEventListener('change', function () { if (ready) send(+rng.value) })
+    rng.addEventListener('input', function () { touched = true; var v = fromPos(+rng.value); nv.value = v; sendThrottled(v) })
+    rng.addEventListener('change', function () { if (ready) send(fromPos(+rng.value)) })
     // type a number → move the slider live; send when committed (blur / Enter)
-    nv.addEventListener('input', function () { touched = true; if (nv.value !== '') rng.value = clamp(+nv.value) })
+    nv.addEventListener('input', function () { touched = true; if (nv.value !== '') rng.value = toPos(clamp(+nv.value)) })
     nv.addEventListener('change', function () {
       if (nv.value === '') return
-      var v = clamp(+nv.value); nv.value = v; rng.value = v; if (ready) send(v)
+      var v = clamp(+nv.value); nv.value = v; rng.value = toPos(v); if (ready) send(v)
     })
     ch.subscribe(function (s) {
       var st = el.querySelector('#st')
-      if (s === 'SUBSCRIBED') { ready = true; st.innerHTML = S.connected(room); if (touched) send(clamp(+rng.value)) }
+      if (s === 'SUBSCRIBED') { ready = true; st.innerHTML = S.connected(room); if (touched) send(clamp(fromPos(+rng.value))) }
       else if (s === 'CHANNEL_ERROR' || s === 'TIMED_OUT') { st.textContent = S.connProblem }
       else st.textContent = s.toLowerCase().replace('_', ' ') + '…'
     })
