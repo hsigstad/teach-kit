@@ -145,7 +145,10 @@
         s += '<rect x="' + (x + 1).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw - 2).toFixed(1) + '" height="' + (sy(0) - y).toFixed(1) + '" class="h-bar"/>'
       }
       ;(LOG ? logTicks(lo, max) : [min, (min + max) / 2, max]).forEach(function (tk) {
-        s += '<text x="' + sx(tk).toFixed(1) + '" y="' + (H - 14) + '" class="h-tick" text-anchor="middle">' + tk + '</text>'
+        var xt = sx(tk)
+        // Anchor edge ticks inward so a wide end label (e.g. 260000) isn't clipped by the viewBox.
+        var anch = xt <= l + 1 ? 'start' : xt >= (W - r) - 1 ? 'end' : 'middle'
+        s += '<text x="' + xt.toFixed(1) + '" y="' + (H - 14) + '" class="h-tick" text-anchor="' + anch + '">' + tk + '</text>'
       })
       if (shown && revealed && poll.correct != null) {
         s += '<line x1="' + sx(poll.correct).toFixed(1) + '" y1="' + t + '" x2="' + sx(poll.correct).toFixed(1) + '" y2="' + sy(0) + '" class="h-correct"/>'
