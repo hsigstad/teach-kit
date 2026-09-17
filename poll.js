@@ -46,24 +46,30 @@
     if (poll.type === 'numeric') return numericPresenter(el, poll, pollId, room, voteUrl)
     if (poll.type === 'text') return textPresenter(el, poll, pollId, room, voteUrl)
     if (poll.type === 'choicetext') return choicetextPresenter(el, poll, pollId, room, voteUrl)
-    el.classList.add('poll')
-    var t = txt(), tag = poll.type === 'quiz' ? t.tagQuiz : (poll.multi ? t.tagMulti : t.tagPoll)
+    el.classList.add('poll', 'poll-c')
+    var t = txt()
     el.innerHTML =
-      '<div class="qwrap">' +
-        '<div class="tag">' + tag + '</div>' +
+      // Full-width heading: the question, with a "select all" hint below it for
+      // multi-answer polls (single-answer polls need no instruction).
+      '<div class="qhead">' +
         '<h2>' + poll.question + '</h2>' +
+        (poll.multi ? '<div class="poll-sub">' + t.selectAll + '</div>' : '') +
         (poll.desc ? '<p class="poll-desc">' + poll.desc + '</p>' : '') +
-        '<div class="bars"></div>' +
-        '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
-          '<button class="reveal-results">' + t.resultsShow + '</button>' +
-          (poll.correct != null ? '<button class="reveal-ans">' + t.revealAnswer + '</button>' : '') +
-        '</div>' +
       '</div>' +
-      // Right column: QR on top, context image (if any) stacked below it.
-      '<div class="pollside">' +
-        '<div class="join"><img alt="Scan to vote"><div class="code">' + room + '</div>' +
-          '<div class="hint">' + t.scanVote + '</div></div>' +
-        (poll.image ? '<div class="pollfig"><img class="poll-img" src="' + poll.image + '" alt=""></div>' : '') +
+      '<div class="pbody">' +
+        '<div class="qwrap">' +
+          '<div class="bars"></div>' +
+          (poll.explain ? '<div class="poll-explain">' + poll.explain + '</div>' : '') +
+          '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
+            '<button class="reveal-results">' + t.resultsShow + '</button>' +
+            (poll.correct != null ? '<button class="reveal-ans">' + t.revealAnswer + '</button>' : '') +
+          '</div>' +
+        '</div>' +
+        // Right column: QR on top, context image (if any) stacked below it.
+        '<div class="pollside">' +
+          '<div class="join"><img alt="Scan to vote"><div class="code">' + room + '</div></div>' +
+          (poll.image ? '<div class="pollfig"><img class="poll-img" src="' + poll.image + '" alt=""></div>' : '') +
+        '</div>' +
       '</div>'
     el.querySelector('.join img').src = qrDataUrl(voteUrl)
 
@@ -94,7 +100,12 @@
     rbtn.onclick = toggle
     el._toggleResults = toggle                          // Poll.deck binds the R key to this
     var abtn = el.querySelector('.reveal-ans')
-    function toggleAns() { revealed = !revealed; if (abtn) abtn.textContent = revealed ? t.answerHide : t.revealAnswer; render() }
+    function toggleAns() {
+      revealed = !revealed
+      if (abtn) abtn.textContent = revealed ? t.answerHide : t.revealAnswer
+      el.classList.toggle('answered', revealed)   // reveals the poll.explain note, if any
+      render()
+    }
     if (abtn) { abtn.onclick = toggleAns; el._toggleAnswer = toggleAns }   // Poll.deck binds the A key to this
 
     var ch = channel(client(), room, pollId)
@@ -257,6 +268,7 @@
     tagQuiz: 'Quiz', tagPoll: 'Live poll', tagMulti: 'Live poll · select all that apply',
     tagNumeric: 'Live poll · drag to answer',
     resultsShow: 'Show results', resultsHide: 'Hide results', revealAnswer: 'Reveal answer', answerHide: 'Hide answer',
+    selectAll: 'Select all that apply',
     scanVote: 'scan to join &amp; vote', scanDrag: 'scan to join &amp; drag', mean: 'Mean:',
     tapOne: 'Tap an option. You can change it any time.',
     tapMulti: 'Tap all that apply. You can change your selection any time.',
