@@ -76,11 +76,11 @@
 .reveal .title .course{ color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:.6em; }
 
 /* ---- Live poll widget ---- */
-/* Shared layout: a small QR badge in the top-left corner, the question heading
-   beside it, the poll body across a full-width row below, and an optional answer
+/* Shared layout: a small QR badge in the top-right corner, the question heading
+   to its left, the poll body across a full-width row below, and an optional answer
    explanation as its own full-width row at the very bottom — so revealing the
    explanation only grows the slide downward; the QR, figure and bars never shift. */
-.poll{ display:grid; grid-template-columns:auto 1fr; grid-template-areas:"qr head" "body body" "expl expl"; column-gap:28px; row-gap:16px; align-items:start; }
+.poll{ display:grid; grid-template-columns:1fr auto; grid-template-areas:"head qr" "body body" "expl expl"; column-gap:28px; row-gap:16px; align-items:start; }
 .poll .join{ grid-area:qr; align-self:start; text-align:center; }
 .poll .join img{ width:116px; height:116px; display:block; image-rendering:pixelated; background:#fff; border:1px solid var(--line); border-radius:10px; padding:6px; }
 .poll .qhead{ grid-area:head; align-self:center; min-width:0; }
