@@ -40,7 +40,6 @@
     if (poll.type === 'text') return textPresenter(el, poll, pollId, room, voteUrl)
     if (poll.type === 'choicetext') return choicetextPresenter(el, poll, pollId, room, voteUrl)
     el.classList.add('poll')
-    if (poll.image) el.classList.add('has-fig')   // side-by-side layout: options | figure | QR
     var t = txt(), tag = poll.type === 'quiz' ? t.tagQuiz : (poll.multi ? t.tagMulti : t.tagPoll)
     el.innerHTML =
       '<div class="qwrap">' +
@@ -53,9 +52,12 @@
           (poll.type === 'quiz' ? '<button class="reveal-ans">' + t.revealAnswer + '</button>' : '') +
         '</div>' +
       '</div>' +
-      (poll.image ? '<div class="pollfig"><img class="poll-img" src="' + poll.image + '" alt=""></div>' : '') +
-      '<div class="join"><img alt="Scan to vote"><div class="code">' + room + '</div>' +
-        '<div class="hint">' + t.scanVote + '</div></div>'
+      // Right column: QR on top, context image (if any) stacked below it.
+      '<div class="pollside">' +
+        '<div class="join"><img alt="Scan to vote"><div class="code">' + room + '</div>' +
+          '<div class="hint">' + t.scanVote + '</div></div>' +
+        (poll.image ? '<div class="pollfig"><img class="poll-img" src="' + poll.image + '" alt=""></div>' : '') +
+      '</div>'
     el.querySelector('.join img').src = qrDataUrl(voteUrl)
 
     // hidden by default: the class votes without seeing the distribution, so peers
