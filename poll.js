@@ -46,6 +46,7 @@
         '<div class="tag">' + tag + '</div>' +
         '<h2>' + poll.question + '</h2>' +
         (poll.desc ? '<p class="poll-desc">' + poll.desc + '</p>' : '') +
+        (poll.image ? '<img class="poll-img" src="' + poll.image + '" alt="">' : '') +
         '<div class="bars"></div>' +
         '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
           '<button class="reveal-results">' + t.resultsShow + '</button>' +
