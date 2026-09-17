@@ -41,6 +41,11 @@
     return c != null && (Array.isArray(c) ? c.indexOf(key) !== -1 : c === key)
   }
 
+  // The QR badge — a bare code with no room number or caption. It carries the
+  // room already, is the same on every slide (scan once), and sits in the
+  // top-left corner. The caller sets .join img src via qrDataUrl(voteUrl).
+  function qrHTML(t) { return '<div class="join"><img alt="' + t.scanVote + '"></div>' }
+
   // ---- Presenter: QR + live bars ----
   function presenter(el, poll, pollId, room, voteUrl) {
     if (poll.type === 'numeric') return numericPresenter(el, poll, pollId, room, voteUrl)
@@ -49,28 +54,27 @@
     el.classList.add('poll', 'poll-c')
     var t = txt()
     el.innerHTML =
-      // Full-width heading: the question, with a "select all" hint below it for
-      // multi-answer polls (single-answer polls need no instruction).
+      qrHTML(t) +
+      // Heading beside the QR: the question, with a "select all" hint below it
+      // for multi-answer polls (single-answer polls need no instruction).
       '<div class="qhead">' +
         '<h2>' + poll.question + '</h2>' +
         (poll.multi ? '<div class="poll-sub">' + t.selectAll + '</div>' : '') +
         (poll.desc ? '<p class="poll-desc">' + poll.desc + '</p>' : '') +
       '</div>' +
+      // Body row: options beside the context figure (if any).
       '<div class="pbody">' +
         '<div class="qwrap">' +
           '<div class="bars"></div>' +
-          (poll.explain ? '<div class="poll-explain">' + poll.explain + '</div>' : '') +
           '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
             '<button class="reveal-results">' + t.resultsShow + '</button>' +
             (poll.correct != null ? '<button class="reveal-ans">' + t.revealAnswer + '</button>' : '') +
           '</div>' +
         '</div>' +
-        // Right column: QR on top, context image (if any) stacked below it.
-        '<div class="pollside">' +
-          '<div class="join"><img alt="Scan to vote"><div class="code">' + room + '</div></div>' +
-          (poll.image ? '<div class="pollfig"><img class="poll-img" src="' + poll.image + '" alt=""></div>' : '') +
-        '</div>' +
-      '</div>'
+        (poll.image ? '<div class="pollfig"><img class="poll-img" src="' + poll.image + '" alt=""></div>' : '') +
+      '</div>' +
+      // Full-width bottom row: the explanation, revealed with the answer.
+      (poll.explain ? '<div class="poll-explain">' + poll.explain + '</div>' : '')
     el.querySelector('.join img').src = qrDataUrl(voteUrl)
 
     // hidden by default: the class votes without seeing the distribution, so peers
@@ -128,18 +132,16 @@
     el.classList.add('poll', 'poll-num')
     var t = txt()
     el.innerHTML =
-      '<div class="qwrap">' +
-        '<div class="tag">' + t.tagNumeric + '</div>' +
-        '<h2>' + poll.question + '</h2>' +
+      qrHTML(t) +
+      '<div class="qhead"><h2>' + poll.question + '</h2></div>' +
+      '<div class="pbody">' +
         '<div class="hist"></div>' +
         '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
           '<span>' + t.mean + ' <b class="mean">–</b></span>' +
           '<button class="reveal-results">' + t.resultsShow + '</button>' +
           (poll.correct != null ? '<button class="reveal-ans">' + t.revealAnswer + '</button>' : '') +
         '</div>' +
-      '</div>' +
-      '<div class="join"><img alt="Scan to vote"><div class="code">' + room + '</div>' +
-        '<div class="hint">' + t.scanDrag + '</div></div>'
+      '</div>'
     el.querySelector('.join img').src = qrDataUrl(voteUrl)
 
     // hidden by default (see presenter()): histogram + mean stay masked until reveal.
@@ -290,16 +292,15 @@
     var t = txt()
     el.classList.add('poll', 'poll-text')
     el.innerHTML =
-      '<div class="qwrap">' +
-        '<div class="tag">' + t.tag + '</div>' +
-        '<h2>' + poll.question + '</h2>' +
+      qrHTML(t) +
+      '<div class="qhead"><h2>' + poll.question + '</h2>' +
         (poll.desc ? '<p class="poll-desc">' + poll.desc + '</p>' : '') +
+      '</div>' +
+      '<div class="pbody">' +
         '<div class="answers"></div>' +
         '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
           '<button class="reveal-results">' + t.show + '</button></div>' +
-      '</div>' +
-      '<div class="join"><img alt="Scan to answer"><div class="code">' + room + '</div>' +
-        '<div class="hint">' + t.scan + '</div></div>'
+      '</div>'
     el.querySelector('.join img').src = qrDataUrl(voteUrl)
     var answers = new Map(), shown = false   // clientId -> text
     var ansEl = el.querySelector('.answers'), totalEl = el.querySelector('.total')
@@ -407,12 +408,10 @@
     el.innerHTML =
       '<div class="ct-top">' +
         '<div class="ct-intro">' +
-          '<div class="tag">' + t.tagPoll + '</div>' +
           '<h2>' + poll.question + '</h2>' +
           (poll.desc ? '<p class="poll-desc">' + poll.desc + '</p>' : '') +
         '</div>' +
-        '<div class="join"><div class="join-cap"><div class="hint">' + t.scanVote + '</div>' +
-          '<div class="code">' + room + '</div></div><img alt="Scan to answer"></div>' +
+        '<div class="join"><img alt="' + t.scanVote + '"></div>' +
       '</div>' +
       '<div class="ctcols" style="grid-template-columns:repeat(' + cols.length + ',1fr)">' +
         cols.map(function (c) {

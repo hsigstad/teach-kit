@@ -76,35 +76,31 @@
 .reveal .title .course{ color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:.6em; }
 
 /* ---- Live poll widget ---- */
-.poll{ display:grid; grid-template-columns:1fr auto; gap:34px; align-items:start; }
-.poll .qwrap{ min-width:0; }
-.poll h2{ margin-bottom:.6em; }
-/* Choice polls: a full-width question heading over a two-column body
-   (options | QR+figure), so the question spans wide instead of wrapping in a
-   narrow column. .poll-c overrides the base .poll grid just above. */
-.poll-c{ display:flex; flex-direction:column; gap:14px; }
-.poll-c .qhead h2{ margin:0; }
+/* Shared layout: a small QR badge in the top-left corner, the question heading
+   beside it, the poll body across a full-width row below, and an optional answer
+   explanation as its own full-width row at the very bottom — so revealing the
+   explanation only grows the slide downward; the QR, figure and bars never shift. */
+.poll{ display:grid; grid-template-columns:auto 1fr; grid-template-areas:"qr head" "body body" "expl expl"; column-gap:28px; row-gap:16px; align-items:start; }
+.poll .join{ grid-area:qr; align-self:start; text-align:center; }
+.poll .join img{ width:116px; height:116px; display:block; image-rendering:pixelated; background:#fff; border:1px solid var(--line); border-radius:10px; padding:6px; }
+.poll .qhead{ grid-area:head; align-self:center; min-width:0; }
+.poll .qhead h2{ margin:0; }
+.poll .pbody{ grid-area:body; min-width:0; }
+.poll .poll-explain{ grid-area:expl; }
+
+/* Choice polls: options beside the figure; "select all" hint under the question. */
 .poll-c .poll-sub{ font-size:.5em; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.5em; }
-.poll-c .pbody{ display:grid; grid-template-columns:1fr auto; gap:34px; align-items:start; }
-/* Optional explanation, revealed with the answer (A key / Reveal answer). */
-.poll-c .poll-explain{ display:none; margin-top:18px; font-size:.72em; line-height:1.45; color:var(--fg);
+.poll-c .pbody{ display:grid; grid-template-columns:1fr auto; column-gap:40px; align-items:start; }
+.poll-c .qwrap{ min-width:0; }
+/* Explanation shown with the answer (A key / Reveal answer). As its own bottom
+   row, revealing it never reflows the options, figure or QR. */
+.poll-c .poll-explain{ display:none; font-size:.72em; line-height:1.45; color:var(--fg);
   border-left:3px solid var(--good); padding:2px 0 2px 14px; }
 .poll-c.answered .poll-explain{ display:block; }
-/* Optional context image (e.g. a game tree) shown above the bars on the projector.
-   Capped small so image + question + up to four bars + footer all fit one slide. */
-/* The poll's right column stacks the QR on top and, for polls with an `image`
-   (e.g. a game tree), the figure below it. Keeping the figure out of the
-   options column lets the question and bars use the full width (less wrapping)
-   while the image still renders large. */
-.poll .pollside{ display:flex; flex-direction:column; gap:20px; align-items:center; }
 .poll .pollfig{ min-width:0; }
 /* height:auto + higher specificity override the full-size SVG rule above
    (.reveal .slides img[src$=".svg"]{height:520px}); cap so the figure fits. */
-.reveal .slides .poll .pollfig img.poll-img{ display:block; height:auto; width:auto; max-width:590px; max-height:300px; margin:0; }
-.poll .join{ text-align:center; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; }
-.poll .join img{ width:170px; height:170px; display:block; image-rendering:pixelated; background:#fff; border-radius:8px; }
-.poll .join .code{ font-size:1.1em; font-weight:800; letter-spacing:.18em; margin-top:10px; color:var(--accent); }
-.poll .join .hint{ font-size:.45em; color:var(--muted); margin-top:2px; }
+.reveal .slides .poll .pollfig img.poll-img{ display:block; height:auto; width:auto; max-width:640px; max-height:430px; margin:0; }
 .poll .bars{ display:flex; flex-direction:column; gap:16px; }
 .poll .bar .top{ display:flex; justify-content:space-between; gap:14px; margin-bottom:6px; font-size:.82em; }
 .poll .bar .lab{ display:flex; gap:12px; align-items:baseline; }
