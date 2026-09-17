@@ -41,6 +41,11 @@
 .reveal .pe{ color:#b3261e; font-weight:800; }        /* efficient outcome (red highlight) */
 /* Display equations */
 .reveal .eq{ text-align:center; font-size:1.25em; font-style:italic; margin:.5em 0; }
+/* reset.css flattens sub/sup to baseline+100%, so restore real subscripts
+   (e.g. x_v written as x<sub>v</sub>) and superscripts. */
+.reveal sub, .reveal sup{ font-size:0.72em; line-height:0; }
+.reveal sub{ vertical-align:-0.3em; }
+.reveal sup{ vertical-align:0.55em; }
 /* A large centred prompt (beamer \Large discussion slides) */
 .reveal .big{ font-size:1.35em; }
 /* Placeholder for content not yet ported/built (e.g. new pillars) */
