@@ -34,6 +34,13 @@
     return function () { var i = f.listeners.indexOf(cb); if (i >= 0) f.listeners.splice(i, 1) }
   }
 
+  // A poll's correct answer may be a single option key or an array of keys
+  // (multi-answer). null/undefined means the poll has no correct answer.
+  function isCorrect(poll, key) {
+    var c = poll.correct
+    return c != null && (Array.isArray(c) ? c.indexOf(key) !== -1 : c === key)
+  }
+
   // ---- Presenter: QR + live bars ----
   function presenter(el, poll, pollId, room, voteUrl) {
     if (poll.type === 'numeric') return numericPresenter(el, poll, pollId, room, voteUrl)
@@ -49,7 +56,7 @@
         '<div class="bars"></div>' +
         '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
           '<button class="reveal-results">' + t.resultsShow + '</button>' +
-          (poll.type === 'quiz' ? '<button class="reveal-ans">' + t.revealAnswer + '</button>' : '') +
+          (poll.correct != null ? '<button class="reveal-ans">' + t.revealAnswer + '</button>' : '') +
         '</div>' +
       '</div>' +
       // Right column: QR on top, context image (if any) stacked below it.
@@ -73,9 +80,9 @@
       poll.options.forEach(function (o) {
         var n = counts[o.key], pct = total ? Math.round(100 * n / total) : 0
         var d = document.createElement('div')
-        d.className = 'bar' + (revealed && poll.correct === o.key ? ' correct' : '') + (shown ? '' : ' masked')
+        d.className = 'bar' + (revealed && isCorrect(poll, o.key) ? ' correct' : '') + (shown ? '' : ' masked')
         d.innerHTML = '<div class="top"><span class="lab"><span class="k">' + o.key + '</span><span>' +
-          o.text + (revealed && poll.correct === o.key ? '  ✓' : '') + '</span></span>' +
+          o.text + (revealed && isCorrect(poll, o.key) ? '  ✓' : '') + '</span></span>' +
           '<span class="n">' + n + ' · ' + pct + '%</span></div>' +
           '<div class="track"><div class="fill" style="width:' + (shown ? (n / max * 100) : 0) + '%"></div></div>'
         barsEl.appendChild(d)
@@ -86,8 +93,9 @@
     function toggle() { shown = !shown; rbtn.textContent = shown ? t.resultsHide : t.resultsShow; render() }
     rbtn.onclick = toggle
     el._toggleResults = toggle                          // Poll.deck binds the R key to this
-    var btn = el.querySelector('.reveal-ans')
-    if (btn) btn.onclick = function () { revealed = !revealed; render() }
+    var abtn = el.querySelector('.reveal-ans')
+    function toggleAns() { revealed = !revealed; if (abtn) abtn.textContent = revealed ? t.answerHide : t.revealAnswer; render() }
+    if (abtn) { abtn.onclick = toggleAns; el._toggleAnswer = toggleAns }   // Poll.deck binds the A key to this
 
     var ch = channel(client(), room, pollId)
     ch.on('broadcast', { event: 'vote' }, function (m) {
@@ -165,8 +173,9 @@
     function toggle() { shown = !shown; rbtn.textContent = shown ? t.resultsHide : t.resultsShow; render() }
     rbtn.onclick = toggle
     el._toggleResults = toggle
-    var btn = el.querySelector('.reveal-ans')
-    if (btn) btn.onclick = function () { revealed = !revealed; render() }
+    var abtn = el.querySelector('.reveal-ans')
+    function toggleAns() { revealed = !revealed; if (abtn) abtn.textContent = revealed ? t.answerHide : t.revealAnswer; render() }
+    if (abtn) { abtn.onclick = toggleAns; el._toggleAnswer = toggleAns }
     var ch = channel(client(), room, pollId)
     ch.on('broadcast', { event: 'vote' }, function (m) {
       var p = m.payload
@@ -247,7 +256,7 @@
     // choice / quiz / numeric poll chrome
     tagQuiz: 'Quiz', tagPoll: 'Live poll', tagMulti: 'Live poll · select all that apply',
     tagNumeric: 'Live poll · drag to answer',
-    resultsShow: 'Show results', resultsHide: 'Hide results', revealAnswer: 'Reveal answer',
+    resultsShow: 'Show results', resultsHide: 'Hide results', revealAnswer: 'Reveal answer', answerHide: 'Hide answer',
     scanVote: 'scan to join &amp; vote', scanDrag: 'scan to join &amp; drag', mean: 'Mean:',
     tapOne: 'Tap an option. You can change it any time.',
     tapMulti: 'Tap all that apply. You can change your selection any time.',
@@ -679,6 +688,12 @@
         var cur = w.Reveal.getCurrentSlide()
         var mount = cur && cur.querySelector && cur.querySelector('.pollmount')
         if (mount && mount._toggleResults) mount._toggleResults()
+      })
+      // 'A' reveals/hides the correct answer — only polls that define one expose _toggleAnswer.
+      w.Reveal.addKeyBinding({ keyCode: 65, key: 'A', description: 'Reveal / hide poll answer' }, function () {
+        var cur = w.Reveal.getCurrentSlide()
+        var mount = cur && cur.querySelector && cur.querySelector('.pollmount')
+        if (mount && mount._toggleAnswer) mount._toggleAnswer()
       })
     }
   }
