@@ -79,8 +79,9 @@
 .poll{ display:grid; grid-template-columns:1fr auto; gap:34px; align-items:start; }
 .poll .qwrap{ min-width:0; }
 .poll h2{ margin-bottom:.6em; }
-/* Optional context image (e.g. a game tree) shown above the bars on the projector. */
-.poll .poll-img{ display:block; max-width:100%; max-height:300px; margin:0 0 .7em; }
+/* Optional context image (e.g. a game tree) shown above the bars on the projector.
+   Capped small so image + question + up to four bars + footer all fit one slide. */
+.poll .poll-img{ display:block; max-width:100%; max-height:190px; margin:0 0 .5em; }
 .poll .join{ text-align:center; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; }
 .poll .join img{ width:170px; height:170px; display:block; image-rendering:pixelated; background:#fff; border-radius:8px; }
 .poll .join .code{ font-size:1.1em; font-weight:800; letter-spacing:.18em; margin-top:10px; color:var(--accent); }
