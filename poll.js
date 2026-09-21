@@ -133,7 +133,9 @@
     var t = txt()
     el.innerHTML =
       qrHTML(t) +
-      '<div class="qhead"><h2>' + poll.question + '</h2></div>' +
+      '<div class="qhead"><h2>' + poll.question + '</h2>' +
+        (poll.desc ? '<p class="poll-desc">' + poll.desc + '</p>' : '') +
+      '</div>' +
       '<div class="pbody">' +
         '<div class="hist"></div>' +
         '<div class="foot"><span>' + t.responses + ' <b class="total">0</b></span>' +
@@ -212,6 +214,7 @@
     var mid = LOG ? Math.round(Math.exp(lnlo + lnr / 2)) : (poll.min + poll.max) / 2
     var rngMin = LOG ? 0 : poll.min, rngMax = LOG ? 1000 : poll.max, rngStep = LOG ? 1 : (poll.step || 1)
     el.innerHTML = '<div class="status" id="st">' + S.connecting + '</div><h1 id="q"></h1>' +
+      (poll.desc ? '<p class="poll-desc" id="qd"></p>' : '') +
       '<div class="numwrap">' +
         '<div class="numentry"><input type="number" id="nv" class="numval" min="' + poll.min + '" max="' + poll.max +
           '" step="' + (poll.step || 1) + '" placeholder="—">' + (unit ? '<span class="numunit">' + unit + '</span>' : '') + '</div>' +
@@ -220,6 +223,7 @@
       '</div>' +
       '<div class="done" id="done">' + S.numHint + '</div>'
     el.querySelector('#q').textContent = poll.question
+    var qd = el.querySelector('#qd'); if (qd) qd.textContent = poll.desc
     var rng = el.querySelector('#rng'), nv = el.querySelector('#nv'), done = el.querySelector('#done')
     var ready = false, touched = false, last = 0, timer = null
     var sb = client(), ch = channel(sb, room, pollId)
