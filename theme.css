@@ -80,6 +80,17 @@
 .reveal .title .sub{ color:var(--muted); font-size:1.05em; margin-top:.3em; }
 .reveal .title .course{ color:var(--accent); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:.6em; }
 
+/* Full-bleed cover: <section class="cover" data-background-image=...> + an overlaid
+   <div class="titlecard"> (course kicker, h1, accentbar, sub). OPT-IN house style for
+   decks with a hero image; only affects .cover, so existing/older decks are untouched. */
+.reveal .cover .titlecard{ position:absolute; left:5%; bottom:8%; max-width:74%; text-align:left;
+  background:linear-gradient(180deg, rgba(9,17,26,.34), rgba(9,17,26,.66)); padding:.5em .9em .72em;
+  border-radius:12px; box-shadow:0 8px 34px rgba(0,0,0,.42); }
+.reveal .cover .titlecard .course{ color:#d6e4f1; font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:.6em; }
+.reveal .cover .titlecard h1{ color:#fff; font-size:2.1em; margin:.06em 0 0; text-shadow:0 2px 14px rgba(0,0,0,.5); }
+.reveal .cover .titlecard .accentbar{ margin:.35em 0 .5em; }
+.reveal .cover .titlecard .sub{ color:#e6eef7; font-size:1.05em; margin-top:.25em; }
+
 /* ---- Live poll widget ---- */
 /* Shared layout: a small QR badge in the top-right corner, the question heading
    to its left, the poll body across a full-width row below, and an optional answer
