@@ -267,6 +267,8 @@
     placeholder: 'Type your answer…', send: 'Send answer',
     hint: 'Type your answer and press Send. You can change it any time.',
     sent: 'Your answer was sent — you can edit and resend.', cleared: 'Your answer was removed.',
+    hintMulti: 'Type an answer and press Send. Send as many as you have — add another each time.',
+    sentMulti: 'Sent — send another answer if you have one.',
     numHint: 'Type a number or drag the slider. You can change it any time.',
     numAnswer: function (v) { return 'Your answer: <b>' + v + '</b> — recorded.' },
     connected: function (room) { return 'Room <b>' + room + '</b> · connected' },
@@ -362,21 +364,33 @@
     var cid = sessionStorage.getItem('poll_cid_' + room + '_' + pollId)
     if (!cid) { cid = randId(); sessionStorage.setItem('poll_cid_' + room + '_' + pollId, cid) }
     var S = txt()
+    // Free-text polls collect ALL the answers a student has by default: each Send
+    // appends a new response (fresh id per submission, like the choicetext board),
+    // so one person can contribute several arguments. Set `multi:false` on the poll
+    // for a single, editable answer (stable id → re-submit replaces, empty clears).
+    var multi = poll.multi !== false
     el.innerHTML = '<div class="status" id="st">' + S.connecting + '</div><h1 id="q"></h1>' +
       (poll.desc ? '<p class="poll-desc" id="qd"></p>' : '') +
       '<div class="textwrap"><textarea id="ta" rows="4" maxlength="' + (poll.maxlen || 240) + '" placeholder="' +
         (poll.placeholder || S.placeholder) + '"></textarea>' +
       '<button class="opt send" id="send">' + S.send + '</button></div>' +
-      '<div class="done" id="done">' + S.hint + '</div>'
+      '<div class="done" id="done">' + (multi ? S.hintMulti : S.hint) + '</div>'
     el.querySelector('#q').textContent = poll.question
     var qd = el.querySelector('#qd'); if (qd) qd.textContent = poll.desc
     var ta = el.querySelector('#ta'), send = el.querySelector('#send'), done = el.querySelector('#done')
-    var ready = false, sb = client(), ch = channel(sb, room, pollId)
+    var ready = false, subN = 0, sb = client(), ch = channel(sb, room, pollId)
     function submit() {
       if (!ready) return
       var t = ta.value.trim()
-      ch.send({ type: 'broadcast', event: 'vote', payload: { clientId: cid, text: t } })
-      done.innerHTML = t ? S.sent : S.cleared
+      if (multi) {
+        if (!t) { done.textContent = S.hintMulti; return }   // no empty answers on an append board
+        var id = cid + '-' + (++subN)                        // fresh id → answers accumulate
+        ch.send({ type: 'broadcast', event: 'vote', payload: { clientId: id, text: t } })
+        ta.value = ''; done.innerHTML = S.sentMulti           // cleared, ready for the next one
+      } else {
+        ch.send({ type: 'broadcast', event: 'vote', payload: { clientId: cid, text: t } })
+        done.innerHTML = t ? S.sent : S.cleared
+      }
     }
     send.onclick = submit
     ch.subscribe(function (s) {
