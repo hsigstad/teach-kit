@@ -388,7 +388,7 @@
       var t = ta.value.trim()
       if (multi) {
         if (!t) { done.textContent = S.hintMulti; return }   // no empty answers on an append board
-        var id = cid + '-' + (++subN)                        // fresh id → answers accumulate
+        var id = cid + '-' + randId()                        // unique per submission → accumulates even if the view re-mounts (phone lock, reload)
         ch.send({ type: 'broadcast', event: 'vote', payload: { clientId: id, text: t } })
         ta.value = ''; done.innerHTML = S.sentMulti           // cleared, ready for the next one
       } else {
@@ -535,7 +535,7 @@
       if (poll.multi && !text) { done.textContent = pickHint; return }   // board: no empty arguments
       // multi → a fresh id per submission so arguments accumulate (one person may
       // add several, to either side); single → stable id so a re-submit replaces.
-      var id = poll.multi ? (cid + '-' + (++subN)) : cid
+      var id = poll.multi ? (cid + '-' + randId()) : cid   // unique per submission → survives a re-mount (phone lock, reload)
       ch.send({ type: 'broadcast', event: 'vote', payload: { clientId: id, choice: choice, text: text } })
       if (poll.multi) { ta.value = ''; done.innerHTML = poll.moreHint || S.sent }   // ready for another
       else done.innerHTML = S.sent
