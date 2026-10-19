@@ -177,7 +177,11 @@
         var anch = xt <= l + 1 ? 'start' : xt >= (W - r) - 1 ? 'end' : 'middle'
         s += '<text x="' + xt.toFixed(1) + '" y="' + (H - 14) + '" class="h-tick" text-anchor="' + anch + '">' + tk + '</text>'
       })
-      if (shown && revealed && poll.correct != null) {
+      // Fasit marker rides on the always-drawn axis, so it does not depend on the
+      // histogram being shown — "Reveal answer" alone must surface it (results may
+      // stay hidden). Previously gated behind `shown`, which made reveal a no-op
+      // until results were also shown.
+      if (revealed && poll.correct != null) {
         s += '<line x1="' + sx(poll.correct).toFixed(1) + '" y1="' + t + '" x2="' + sx(poll.correct).toFixed(1) + '" y2="' + sy(0) + '" class="h-correct"/>'
         s += '<text x="' + sx(poll.correct).toFixed(1) + '" y="' + (t + 13) + '" class="h-correctlab" text-anchor="middle">' + (poll.answerLabel || ('answer ' + poll.correct)) + '</text>'
       }
