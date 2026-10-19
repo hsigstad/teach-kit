@@ -12,6 +12,28 @@
    Do NOT force section height — that pins content to the top and creates dead space. */
 .reveal section.center{ text-align:center; }
 .reveal section.center h1,.reveal section.center h2,.reveal section.center p{ margin-left:auto; margin-right:auto; }
+
+/* ---- Section-divider slides ---------------------------------------------------
+   A centered slide whose ONLY content is a heading is a chapter break. Style it
+   deliberately — a larger heading with a short accent rule beneath — so it reads
+   as an intentional divider, not bare text. Auto-applies to every existing
+   `<section class="center"><h2>…</h2></section>` across all decks, with no markup
+   change (content `.center` slides, which have a body, are untouched).
+   OPTIONAL IMAGE: add a background to the same section for a full-bleed divider —
+     <section class="center" data-background-image="assets/x.png"
+              data-background-size="cover" data-background-position="center">
+       <h2>Tittel</h2>
+     </section>
+   The heading then sits on a translucent panel so it stays readable over the photo. */
+.reveal section.center:has(> h2:only-child) h2{ font-size:2em; padding-bottom:.32em; }
+.reveal section.center:has(> h2:only-child) h2::after{
+  content:""; display:block; width:120px; height:6px; margin:.46em auto 0;
+  border-radius:4px; background:var(--bar); }
+.reveal section.center[data-background-image]:has(> h2:only-child) h2{
+  color:#fff; display:inline-block; padding:.28em .82em .4em;
+  background:linear-gradient(180deg, rgba(9,17,26,.4), rgba(9,17,26,.7));
+  border-radius:14px; box-shadow:0 10px 36px rgba(0,0,0,.45); }
+.reveal section.center[data-background-image]:has(> h2:only-child) h2::after{ background:#fff; }
 /* Keep everything inside the 1280x720 canvas — never overflow the slide.
    520px ≈ the usable content height (619) minus a two-line heading, so a lone
    image fills the slide without overflowing. Standalone images are centred so a
