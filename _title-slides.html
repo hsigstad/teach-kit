@@ -1,0 +1,64 @@
+<!-- ===========================================================================
+     TITLE-SLIDE REFERENCE  (teach-kit house style)
+     ---------------------------------------------------------------------------
+     Copy ONE of the two variants below as the first <section> of a deck.
+     Not a standalone page — a menu of sanctioned snippets. All styling lives in
+     theme.css; the markup only carries semantic classes. Keep the four elements
+     in this order every time:
+         course kicker  ->  <h1> title  ->  accentbar  ->  sub (instructor)
+
+     RULES
+     - Instructor line is always: <div class="sub">Henrik Sigstad</div>
+     - Kicker is "<COURSE> · <label>", e.g. "ELE3786 · Forelesning 11" or
+       "MST0035 · Lecture 1". Language follows the course (ELE Norwegian,
+       MST English). Prefer a numbered label ("Lecture 7" / "Forelesning 7");
+       use a topic name only when the deck is not part of the numbered sequence.
+     - No date field, no logo element (branding on cover decks = the hero image).
+     - Use Variant B when the deck has a hero image; Variant A otherwise.
+     =========================================================================== -->
+
+
+<!-- VARIANT A — flat title slide (no hero image) -------------------------------
+     The accentbar carries the inline auto-margins so it centers under the h1. -->
+<section class="title center">
+  <div class="course">COURSE · Lecture N</div>
+  <h1>DECK TITLE</h1>
+  <div class="accentbar" style="margin-left:auto;margin-right:auto"></div>
+  <div class="sub">Henrik Sigstad</div>
+</section>
+
+
+<!-- VARIANT B — full-bleed hero cover ------------------------------------------
+     The background goes on the <section>; the four title elements sit inside the
+     overlaid .titlecard box. Same element order as Variant A. -->
+<section class="cover" data-background-image="assets/NAME-opener.png"
+         data-background-size="cover" data-background-position="center">
+  <div class="titlecard">
+    <div class="course">COURSE · Lecture N</div>
+    <h1>DECK TITLE</h1>
+    <div class="accentbar"></div>
+    <div class="sub">Henrik Sigstad</div>
+  </div>
+</section>
+
+
+<!-- BOX PLACEMENT (Variant B only) ---------------------------------------------
+     The titlecard defaults to BOTTOM-LEFT. Add ONE placement class so the box
+     sits over the quietest part of the picture and hides as little of the focal
+     content as possible. Grid: 1st letter = vertical (t/c/b), 2nd = horizontal
+     (l/c/r). Center-column variants (tc-tc / tc-cc / tc-bc) also center the text.
+
+         tc-tl   tc-tc   tc-tr
+         tc-cl   tc-cc   tc-cr
+         tc-bl   tc-bc   tc-br      <- tc-bl is the default (omit the class)
+
+     Example — picture's subject is on the left, so park the box top-right: -->
+<section class="cover" data-background-image="assets/NAME-opener.png"
+         data-background-size="cover" data-background-position="center">
+  <div class="titlecard tc-tr">
+    <div class="course">COURSE · Lecture N</div>
+    <h1>DECK TITLE</h1>
+    <div class="accentbar"></div>
+    <div class="sub">Henrik Sigstad</div>
+  </div>
+</section>

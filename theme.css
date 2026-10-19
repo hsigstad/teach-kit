@@ -83,6 +83,11 @@
 /* Full-bleed cover: <section class="cover" data-background-image=...> + an overlaid
    <div class="titlecard"> (course kicker, h1, accentbar, sub). OPT-IN house style for
    decks with a hero image; only affects .cover, so existing/older decks are untouched. */
+/* The card is position:absolute, so the section has no in-flow content and would
+   collapse — then center:true would vertically-centre it and the top/bottom
+   percentages below would all resolve to mid-slide. Force the section to fill the
+   stage so the placement percentages reference the real 1280x720. */
+.reveal .slides section.cover{ height:100%; top:0 !important; }
 .reveal .cover .titlecard{ position:absolute; left:5%; bottom:8%; max-width:74%; text-align:left;
   background:linear-gradient(180deg, rgba(9,17,26,.34), rgba(9,17,26,.66)); padding:.5em .9em .72em;
   border-radius:12px; box-shadow:0 8px 34px rgba(0,0,0,.42); }
@@ -90,6 +95,22 @@
 .reveal .cover .titlecard h1{ color:#fff; font-size:2.1em; margin:.06em 0 0; text-shadow:0 2px 14px rgba(0,0,0,.5); }
 .reveal .cover .titlecard .accentbar{ margin:.35em 0 .5em; }
 .reveal .cover .titlecard .sub{ color:#e6eef7; font-size:1.05em; margin-top:.25em; }
+/* Optional placement modifiers for the cover titlecard. Default (no class) anchors
+   the box bottom-left. Add ONE class to move it to the quietest region of the hero
+   image, so it hides as little of the focal content as possible. 3x3 grid: first
+   letter = vertical (t/c/b), second = horizontal (l/c/r). tc-bl == the default. */
+.reveal .cover .titlecard.tc-tl{ top:8%;    bottom:auto; left:5%;  right:auto; }
+.reveal .cover .titlecard.tc-tr{ top:8%;    bottom:auto; right:5%; left:auto; }
+.reveal .cover .titlecard.tc-bl{ bottom:8%; top:auto;    left:5%;  right:auto; }
+.reveal .cover .titlecard.tc-br{ bottom:8%; top:auto;    right:5%; left:auto; }
+.reveal .cover .titlecard.tc-cl{ top:50%;   bottom:auto; left:5%;  right:auto; transform:translateY(-50%); }
+.reveal .cover .titlecard.tc-cr{ top:50%;   bottom:auto; right:5%; left:auto;  transform:translateY(-50%); }
+.reveal .cover .titlecard.tc-tc{ top:8%;    bottom:auto; left:50%; right:auto; transform:translateX(-50%); text-align:center; }
+.reveal .cover .titlecard.tc-bc{ bottom:8%; top:auto;    left:50%; right:auto; transform:translateX(-50%); text-align:center; }
+.reveal .cover .titlecard.tc-cc{ top:50%;   bottom:auto; left:50%; right:auto; transform:translate(-50%,-50%); text-align:center; }
+.reveal .cover .titlecard.tc-tc .accentbar,
+.reveal .cover .titlecard.tc-bc .accentbar,
+.reveal .cover .titlecard.tc-cc .accentbar{ margin-left:auto; margin-right:auto; }
 
 /* ---- Live poll widget ---- */
 /* Shared layout: a small QR badge in the top-right corner, the question heading

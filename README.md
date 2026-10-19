@@ -29,6 +29,7 @@ toolkit has a **single source of truth**. Courses fetch it at build time into th
 | `transcript.js` | In-deck "Vis transkript" toggle. |
 | `config.js` | Supabase project config for the live polls. |
 | `_deck-template.html` | Starting-point template for a new deck. |
+| `_title-slides.html` | Reference snippets + rules for the two house-style title slides (flat + hero cover) and the cover box-placement classes. |
 | `lib/` | Vendored reveal.js (+ Supabase / QR libs). |
 
 ## Consuming it from a course

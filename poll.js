@@ -751,4 +751,47 @@
   }
   if (w.document.readyState === 'loading') w.document.addEventListener('DOMContentLoaded', autoboot)
   else autoboot()
+
+  // ---- Cover title-card auto-fit ----
+  // A `.cover .titlecard` is position:absolute, so it shrink-wraps to its content —
+  // until the <h1> is long enough to hit the max-width cap and wrap. The box then
+  // stays pinned at the cap, leaving dead space to the right of the shorter lines.
+  // CSS can't size a box to its *wrapped* longest line (it lays out once at the
+  // capped width), so measure the rendered lines and set an explicit width; the
+  // card's own padding becomes the margin. Measured in slide-layout px (divide out
+  // reveal's viewport scale), so it's resolution-independent, idempotent, and safe
+  // to re-run on resize. Not gated on polls — every cover deck loads poll.js.
+  function fitTitlecard(tc) {
+    var h1 = tc.querySelector('h1'); if (!h1) return
+    var slide = tc.closest('.cover'); if (!slide || !slide.offsetWidth) return
+    var scale = slide.getBoundingClientRect().width / slide.offsetWidth || 1
+    var cs = w.getComputedStyle(tc), pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
+    function textW(el) {
+      if (!el) return 0
+      var r = w.document.createRange(); r.selectNodeContents(el)
+      var rects = r.getClientRects(), m = 0
+      for (var i = 0; i < rects.length; i++) m = Math.max(m, rects[i].width / scale)
+      return m
+    }
+    function need() { return Math.ceil(Math.max(textW(h1), textW(tc.querySelector('.course')), textW(tc.querySelector('.sub')), 120)) }
+    tc.style.width = ''                                   // start at the max-width cap, then tighten
+    var n = need()
+    tc.style.width = (n + pad) + 'px'
+    for (var pass = 0; pass < 4; pass++) {                // a narrower width can cause an extra wrap into
+      var n2 = need()                                     // shorter lines, leaving the box loose again —
+      if (n2 >= n - 0.5) break                            // re-measure and keep shrinking until it
+      n = n2; tc.style.width = (n + pad) + 'px'           // converges (longest line is monotonic here)
+    }
+  }
+  function fitTitlecards() {
+    var cards = w.document.querySelectorAll('.reveal .cover .titlecard')
+    for (var i = 0; i < cards.length; i++) fitTitlecard(cards[i])
+  }
+  function bootTitlecards() {
+    fitTitlecards()
+    w.addEventListener('resize', fitTitlecards)
+    if (w.Reveal && w.Reveal.on) { try { w.Reveal.on('ready', fitTitlecards); w.Reveal.on('resize', fitTitlecards) } catch (e) {} }
+  }
+  if (w.document.readyState === 'loading') w.document.addEventListener('DOMContentLoaded', bootTitlecards)
+  else bootTitlecards()
 })(window)
